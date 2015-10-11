@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
+    <item android:id="@+id/action_sdcard" android:title="@string/action_sdcard"
+        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_emdk" android:title="@string/action_emdk"
+        android:orderInCategory="100" app:showAsAction="never"
+        android:enabled="false"/>
+    <item android:id="@+id/action_battery" android:title="@string/action_battery"
+        android:orderInCategory="100" app:showAsAction="never" />
+</menu>

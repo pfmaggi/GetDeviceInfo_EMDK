@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Get Device Info</string>
+    <string name="action_emdk">EMDK</string>
+    <string name="action_sdcard">SDCard</string>
+    <string name="action_battery">Battery</string>
+    <string name="electronic_serial_number">Device ESN:</string>
+    <string name="build_number">Build Number:</string>
+    <string name="device_name">Device:</string>
+    <string name="device_brand">Brand:</string>
+    <string name="external_storage">External Storage Directory:</string>
+    <string name="internal_sdcard">Internal SDCard Path:</string>
+    <string name="is_gms">Google Mobile Services:</string>
+    <string name="is_emdk">EMDK runtime:</string>
+
+    <string name="msg_available">Available</string>
+    <string name="msg_not_available">NOT Available</string>
+    <string name="msg_app_info">pietro.maggi@zebra.com</string>
+
+    <string name="version_osx">OSx core:</string>
+    <string name="version_mxmf">Mx Framework:</string>
+    <string name="version_scanner">Scanner Framework:</string>
+    <string name="version_android">Android version:</string>
+    <string name="version_emdk">EMDK:</string>
+</resources>
