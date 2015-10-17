@@ -2,6 +2,7 @@ package com.pietromaggi.sample.deviceinfo;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,6 +19,10 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
 public class MainActivity extends AppCompatActivity {
+    private final static String EMDK_PACKAGE_NAME = "com.symbol.emdk.emdkservice";
+    private final static int IDX_MENU_EMDK = 1;
+    private final static int IDX_MENU_INSTALL_EMDK = 3;
+
     private TextView DeviceNameTextView;
     private TextView DeviceBrandTextView;
     private TextView ESNTextView;
@@ -26,8 +31,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView IsGoogleTextView;
     private TextView IsEMDKTextView;
     private boolean mIsEmdkAvailable;
-
-    private final static int IDX_MENU_EMDK = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,23 +48,23 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        DeviceNameTextView = (TextView)findViewById(R.id.device_type);
+        DeviceNameTextView = (TextView) findViewById(R.id.device_type);
         DeviceNameTextView.setText(Build.DEVICE);
 
-        ESNTextView = (TextView)findViewById(R.id.device_esn);
+        ESNTextView = (TextView) findViewById(R.id.device_esn);
         ESNTextView.setText(Build.SERIAL);
 
-        VersionAndroidTextView = (TextView)findViewById(R.id.version_android);
+        VersionAndroidTextView = (TextView) findViewById(R.id.version_android);
         VersionAndroidTextView.setText(Build.VERSION.RELEASE);
 
-        BuildNumberTextView = (TextView)findViewById(R.id.build_number);
+        BuildNumberTextView = (TextView) findViewById(R.id.build_number);
         BuildNumberTextView.setText(Build.ID);
 
-        DeviceBrandTextView = (TextView)findViewById(R.id.device_brand);
+        DeviceBrandTextView = (TextView) findViewById(R.id.device_brand);
         DeviceBrandTextView.setText(Build.BRAND);
 
-        IsGoogleTextView = (TextView)findViewById(R.id.is_gms);
-        IsEMDKTextView = (TextView)findViewById(R.id.is_emdk);
+        IsGoogleTextView = (TextView) findViewById(R.id.is_gms);
+        IsEMDKTextView = (TextView) findViewById(R.id.is_emdk);
 
     }
 
@@ -75,8 +78,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         mIsEmdkAvailable = false;
-        if (isPackageInstalled("com.symbol.emdk.emdkservice", this)) {
-            IsEMDKTextView.setText(getString(R.string.msg_available));
+        if (isPackageInstalled(this, EMDK_PACKAGE_NAME)) {
+            String emdkVversion = getPackageVersion(this, EMDK_PACKAGE_NAME);
+            IsEMDKTextView.setText(getString(R.string.msg_available) + ": v" + emdkVversion);
             mIsEmdkAvailable = true;
         } else {
             IsEMDKTextView.setText(getString(R.string.msg_not_available));
@@ -85,11 +89,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onPrepareOptionsMenu (Menu menu) {
+    public boolean onPrepareOptionsMenu(Menu menu) {
         if (mIsEmdkAvailable) {
             menu.getItem(IDX_MENU_EMDK).setEnabled(true);
+            menu.getItem(IDX_MENU_INSTALL_EMDK).setEnabled(false);
         } else {
             menu.getItem(IDX_MENU_EMDK).setEnabled(false);
+            menu.getItem(IDX_MENU_INSTALL_EMDK).setEnabled(true);
         }
         return true;
     }
@@ -98,9 +104,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-
-//        if (!mIsEmdkAvailable)
-//            menu.getItem(1).setEnabled(false);
 
         return true;
     }
@@ -112,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_sdcard) {
             return true;
         } else if (id == R.id.action_emdk) {
@@ -120,6 +122,25 @@ public class MainActivity extends AppCompatActivity {
             startActivity(i);
             return true;
         } else if (id == R.id.action_battery) {
+            return true;
+        } else if (id == R.id.action_install_emdk) {
+            // Copy apk form asset folder to secondary storage and install it
+//            string apkPath = Path.Combine (Android.OS.Environment.ExternalStorageDirectory.ToString (), "tmp_app.apk");
+//            using (BinaryReader br = new BinaryReader(Assets.Open("Test/Cnd.apk")))
+//            {
+//                using (BinaryWriter bw = new BinaryWriter(new FileStream(apkPath, FileMode.Create)))
+//                {
+//                    byte[] buffer = new byte[2048];
+//                    int len = 0;
+//                    while ((len = br.Read(buffer, 0, buffer.Length)) > 0)
+//                    {
+//                        bw.Write (buffer, 0, len);
+//                    }
+//                }
+//            }
+//            Intent intent = new Intent(Intent.ACTION_VIEW);
+//            intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
+//            startActivity(intent);
             return true;
         }
 
@@ -136,13 +157,23 @@ public class MainActivity extends AppCompatActivity {
         return result;
     }
 
-    private boolean isPackageInstalled(String packagename, Context context) {
+    private boolean isPackageInstalled(Context context, String packageName) {
         PackageManager pm = context.getPackageManager();
         try {
-            pm.getPackageInfo(packagename, PackageManager.GET_ACTIVITIES);
+            PackageInfo info = pm.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
             return true;
         } catch (PackageManager.NameNotFoundException e) {
             return false;
+        }
+    }
+
+    private String getPackageVersion(Context context, String packageName) {
+        PackageManager pm = context.getPackageManager();
+        try {
+            PackageInfo info = pm.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
+            return info.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            return "N/A";
         }
     }
 }
