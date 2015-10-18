@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.os.Build;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -18,16 +18,13 @@ import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
+import com.pietromaggi.sample.deviceinfo.databinding.MainInfoBinding;;
+
 public class MainActivity extends AppCompatActivity {
     private final static String EMDK_PACKAGE_NAME = "com.symbol.emdk.emdkservice";
     private final static int IDX_MENU_EMDK = 1;
     private final static int IDX_MENU_INSTALL_EMDK = 3;
 
-    private TextView DeviceNameTextView;
-    private TextView DeviceBrandTextView;
-    private TextView ESNTextView;
-    private TextView VersionAndroidTextView;
-    private TextView BuildNumberTextView;
     private TextView IsGoogleTextView;
     private TextView IsEMDKTextView;
     private boolean mIsEmdkAvailable;
@@ -36,6 +33,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        MainInfoBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        MainInfo mainInfo = new MainInfo();
+        binding.setMainInfo(mainInfo);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -48,20 +50,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        DeviceNameTextView = (TextView) findViewById(R.id.device_type);
-        DeviceNameTextView.setText(Build.DEVICE);
-
-        ESNTextView = (TextView) findViewById(R.id.device_esn);
-        ESNTextView.setText(Build.SERIAL);
-
-        VersionAndroidTextView = (TextView) findViewById(R.id.version_android);
-        VersionAndroidTextView.setText(Build.VERSION.RELEASE);
-
-        BuildNumberTextView = (TextView) findViewById(R.id.build_number);
-        BuildNumberTextView.setText(Build.ID);
-
-        DeviceBrandTextView = (TextView) findViewById(R.id.device_brand);
-        DeviceBrandTextView.setText(Build.BRAND);
 
         IsGoogleTextView = (TextView) findViewById(R.id.is_gms);
         IsEMDKTextView = (TextView) findViewById(R.id.is_emdk);
