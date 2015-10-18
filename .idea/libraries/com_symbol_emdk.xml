@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="com.symbol.emdk">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/app/libs/com.symbol.emdk.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
